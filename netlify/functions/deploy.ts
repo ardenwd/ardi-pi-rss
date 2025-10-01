@@ -3,7 +3,7 @@
 import type { Config } from '@netlify/functions';
 
 const BUILD_HOOK =
-  'https://api.netlify.com/build_hooks/your-build-hook-id'; // replace me!
+  'https://api.netlify.com/build_hooks/68dc62d66fda861a17755b84';
 
 export default async (req: Request) => {
   await fetch(BUILD_HOOK, {
