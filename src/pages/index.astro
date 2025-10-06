@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Parser from "rss-parser";
+import home from "../assets/energy-sphere.png";
 import "../styles/global.css";
 import { fetchSources } from "../utilities/fetchSources.js";
 const parser = new Parser();
@@ -58,20 +59,56 @@ const sortedFeedItems = feedItems.sort(
 ---
 
 <Layout title="Ardipithecus">
-  <main class="flex flex-col justify-center p-4">
+ <img src={home.src} alt="home" class="home-button float-right h-20  m-4" />
+ <script>document.addEventListener('click', (e) => {
+  const homeButton = document.querySelector('.home-button');
+                homeButton.addEventListener('click', () => {
+                document.querySelectorAll('.media-item.hidden').forEach(item => {
+                    item.classList.remove('hidden');
+                  });
+                })
+              });
+              </script>
+  <main class="flex flex-row justify-center p-4"> 
+    <div class="sidebar w-20% bg-pink-200">
+  </div>
+  <div class="feed flex flex-col justify-center p-4">
     {
       //go through all the feed items
       sortedFeedItems.map((item) => (
-        <div class="flex-col mb-6">
-          {/* title */}
+        <div class={`flex-col mb-6 media-item ${item.feed.replace(/\s+/g, '-')}`}>
+          {/* title of media */}
           <a href={item.link} class="font-medium">
             {item.title}{" "}
           </a>
           <div class="flex flex-row mt-2 font-light text-gray-900 text-sm">
             {/* source */}
-            <p class="border border-gray-500 px-2 py-1 mr-2 rounded-2xl">
+            <button class="source-button border border-gray-500 px-2 py-1 mr-2 rounded-2xl hover:bg-teal-200">
               {item.feed}
-            </p>
+            </button>
+            {/* function to handle click */}
+            <script>
+	            const sourceButtons = document.querySelectorAll('.source-button');
+              sourceButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                  const source = button.textContent;
+                  // Handle the click event, e.g., filter items by source
+                  var mediaItems = document.querySelectorAll('.media-item');
+                  //check which items have the same class as the source
+                  mediaItems.forEach(item => { console.log(item.classList);
+                    if (item.classList.contains(source.trim().replace(/\s+/g, '-'))) {
+                    //console.log('contains the source name', item);
+                    } else {
+                      //  console.log('Toggling visibility for', item);
+                       item.classList.toggle('hidden');
+                    }
+                  });
+                  console.log(`Source clicked: ${source}`);
+                });
+              });
+
+      
+            </script>
             {/* date */}
             <p class="border border-gray-500 px-2 py-1 mr-2 rounded-2xl">
               {item.date
@@ -88,5 +125,6 @@ const sortedFeedItems = feedItems.sort(
         </div>
       ))
     }
+    </div>
   </main>
 </Layout>
