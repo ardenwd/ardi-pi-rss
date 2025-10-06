@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Parser from "rss-parser";
+import "../styles/global.css";
 import { fetchSources } from "../utilities/fetchSources.js";
 const parser = new Parser();
 const sources = await fetchSources();
@@ -41,6 +42,7 @@ await Promise.allSettled(
             title: item.title,
             link: item.link,
             date,
+            //add images next
           });
         }
       });
@@ -55,18 +57,35 @@ const sortedFeedItems = feedItems.sort(
 );
 ---
 
-<Layout title="Welcome to Astro.">
-  <main>
-    <p>list of sources</p>
+<Layout title="Ardipithecus">
+  <main class="flex flex-col justify-center p-4">
     {
+      //go through all the feed items
       sortedFeedItems.map((item) => (
-        <ul>
-          <li>
-            <a href={item.link}>{item.title}</a>
-            <p>{item.feed}</p>
-            <p>{item.date}</p>
-          </li>
-        </ul>
+        <div class="flex-col mb-6">
+          {/* title */}
+          <a href={item.link} class="font-medium">
+            {item.title}{" "}
+          </a>
+          <div class="flex flex-row mt-2 font-light text-gray-900 text-sm">
+            {/* source */}
+            <p class="border border-gray-500 px-2 py-1 mr-2 rounded-2xl">
+              {item.feed}
+            </p>
+            {/* date */}
+            <p class="border border-gray-500 px-2 py-1 mr-2 rounded-2xl">
+              {item.date
+                ? item.date.toLocaleString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric",
+                  })
+                : ""}
+            </p>
+
+            {/* tags */}
+          </div>
+        </div>
       ))
     }
   </main>
